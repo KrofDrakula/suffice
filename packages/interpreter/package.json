@@ -14,7 +14,8 @@
   "scripts": {
     "build": "vite build",
     "test": "vitest",
-    "ci-test": "vitest --run"
+    "ci-test": "vitest --run",
+    "ci-lint": "tsc --noEmit"
   },
   "devDependencies": {
     "arcsecond": "^5.0.0",
