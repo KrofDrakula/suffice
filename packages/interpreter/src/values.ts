@@ -1,16 +1,12 @@
 import {
   anyOfString,
-  choice,
   coroutine,
-  digit,
   digits,
+  fail,
   letters,
   lookAhead,
-  many,
-  peek,
   possibly,
   regex,
-  sequenceOf,
   str,
 } from "arcsecond";
 import {
@@ -66,10 +62,7 @@ export const cellReference = coroutine((run): CellReference => {
     ) + 1;
   const rowLock = run(lookAhead(possibly(referenceLock))) == "$";
   if (rowLock) run(referenceLock);
-  const row = run(
-    sequenceOf([nonZeroDigit, many(digit)]).map(([start, rest]) =>
-      parseInt(`${start}${rest.join("")}`, 10)
-    )
-  );
+  const row = parseInt(run(digits), 0);
+  if (row == 0) run(fail("Rows must start with 1"));
   return { type: "reference", row, rowLock, column, columnLock };
 });

@@ -137,4 +137,9 @@ describe("cellReference", () => {
         expect(result.result, `parsing ${input}`).toEqual(expected);
     }
   });
+
+  it("does not allow using row 0", () => {
+    const result = cellReference.run("A0");
+    expect(result.isError).toBe(true);
+  });
 });
