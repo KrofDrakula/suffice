@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   booleanLiteral,
+  cellRange,
   cellReference,
   numberLiteral,
   stringLiteral,
@@ -141,5 +142,35 @@ describe("cellReference", () => {
   it("does not allow using row 0", () => {
     const result = cellReference.run("A0");
     expect(result.isError).toBe(true);
+  });
+});
+
+describe("cellRange", () => {
+  it("parses a cell range", () => {
+    const result = cellRange.run("A1:B2");
+    expect(result.isError).toBe(false);
+    if (!isError(result))
+      expect(result.result).toEqual({
+        type: "range",
+        start: {
+          type: "reference",
+          row: 1,
+          rowLock: false,
+          column: 1,
+          columnLock: false,
+        },
+        end: {
+          type: "reference",
+          row: 2,
+          rowLock: false,
+          column: 2,
+          columnLock: false,
+        },
+      });
+  });
+
+  it("enforces start to be before end", () => {
+    expect(cellRange.run("A2:B1").isError).toBe(true);
+    expect(cellRange.run("B1:A2").isError).toBe(true);
   });
 });

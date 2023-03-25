@@ -11,6 +11,7 @@ import {
 } from "arcsecond";
 import {
   BooleanValue,
+  CellRange,
   CellReference,
   NumberValue,
   StringValue,
@@ -64,4 +65,18 @@ export const cellReference = coroutine((run): CellReference => {
   const row = parseInt(run(digits), 0);
   if (row == 0) run(fail("Rows must start with 1"));
   return { type: "reference", row, rowLock, column, columnLock };
+});
+
+export const cellRange = coroutine((run): CellRange => {
+  const start = run(cellReference);
+  run(str(":"));
+  const end = run(cellReference);
+  if (start.row > end.row) run(fail("Start row cannot exceed end row!"));
+  if (start.column > end.column)
+    run(fail("Start column cannot exceed end column!"));
+  return {
+    type: "range",
+    start,
+    end,
+  };
 });
