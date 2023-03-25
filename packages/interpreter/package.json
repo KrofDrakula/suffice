@@ -13,7 +13,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "vite build",
-    "test": "vitest"
+    "test": "vitest",
+    "ci-test": "vitest --run"
   },
   "devDependencies": {
     "arcsecond": "^5.0.0",
