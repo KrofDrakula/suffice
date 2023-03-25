@@ -4,7 +4,6 @@ description: Sets up the common Node+pnpm environment
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
     - uses: pnpm/action-setup@v2
       with:
         version: 7
