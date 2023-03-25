@@ -1,13 +1,12 @@
 name: Tests
 on: push
-concurrency: ${{ github.ref }}
 
 jobs:
   interpreter:
     name: Interpreter
     runs-on: ubuntu-latest
     steps:
-      - uses: ${{ github.workspace }}/.github/actions/setup
+      - uses: ./.github/actions/setup
       - run: |
           pnpm install
           cd packages/interpreter
