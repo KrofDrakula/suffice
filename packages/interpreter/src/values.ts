@@ -49,19 +49,18 @@ export const booleanLiteral = regex(/^(true|false)\b/gi).map(
 );
 
 const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const nonZeroDigit = anyOfString("123456789");
 const referenceLock = str("$");
 
+const alphaToColumnNumber = (chars: string): number =>
+  [...chars.toUpperCase()].reduceRight(
+    (acc, next) => acc * alpha.length + alpha.indexOf(next),
+    0
+  ) + 1;
+
 export const cellReference = coroutine((run): CellReference => {
-  const columnLock = run(lookAhead(possibly(referenceLock))) == "$";
-  if (columnLock) run(referenceLock);
-  const column =
-    [...run(letters).toUpperCase()].reduceRight(
-      (acc, next) => acc * alpha.length + alpha.indexOf(next),
-      0
-    ) + 1;
-  const rowLock = run(lookAhead(possibly(referenceLock))) == "$";
-  if (rowLock) run(referenceLock);
+  const columnLock = run(possibly(referenceLock)) == "$";
+  const column = alphaToColumnNumber(run(letters));
+  const rowLock = run(possibly(referenceLock)) == "$";
   const row = parseInt(run(digits), 0);
   if (row == 0) run(fail("Rows must start with 1"));
   return { type: "reference", row, rowLock, column, columnLock };
