@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/lint-and-test
+      - name: Lint and test
+        uses: ./.github/actions/lint-and-test
         with:
           package-name: interpreter
