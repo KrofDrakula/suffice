@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "nodenext",
+    "lib": ["ESNext"],
+    "noEmit": true,
+    "declaration": true,
+    "strict": true
+  }
+}
