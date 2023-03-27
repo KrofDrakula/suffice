@@ -15,10 +15,12 @@
     "build": "vite build",
     "test": "vitest",
     "ci-test": "vitest --run",
-    "ci-lint": "tsc --noEmit"
+    "ci-lint": "tsc --noEmit",
+    "build-grammar": "peggy -o src/grammar/index.js --format es src/grammar/main.pegjs",
+    "test-grammar": "pnpm build-grammar && pnpm test -- --run"
   },
   "devDependencies": {
-    "arcsecond": "^5.0.0",
+    "peggy": "^3.0.2",
     "typescript": "^5.0.2",
     "vite": "^4.2.1",
     "vite-plugin-dts": "^2.1.0",
