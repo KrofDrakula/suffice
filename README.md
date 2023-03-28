@@ -4,4 +4,4 @@ A lightweight Excel-like spreadsheet application. Do what you need, and nothing 
 
 ## Build status
 
-![GitHub Actions Status](https://github.com/krofdrakula/suffice/actions/workflows/tests/badge.svg)
+![GitHub Actions Status](https://github.com/krofdrakula/suffice/actions/workflows/tests.yml/badge.svg)
