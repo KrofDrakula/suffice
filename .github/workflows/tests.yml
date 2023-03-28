@@ -17,6 +17,7 @@ jobs:
       - run: pnpm install
       - name: Build grammar
         run: pnpm build-grammar
+        working-directory: packages/interpreter
       - name: Lint
         run: pnpm ci-lint
         working-directory: packages/interpreter
