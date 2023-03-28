@@ -7,18 +7,60 @@ const alphaToColumnNumber = (chars) =>
     0
   ) + 1;
 
-const parseCellReference = (row, column, lockRow, lockColumn) => {
+const parseCellReference = (row, column, lockRow, lockColumn, location) => {
   return {
     type: "reference",
     row: parseInt(row, 10),
     rowLock: lockRow == "$",
     column: alphaToColumnNumber(column),
     columnLock: lockColumn == "$",
+    location: {
+      start: location.start.offset,
+      end: location.end.offset
+    }
   };
 };
 }}
 
+expression
+  = ws @sum ws
+
+sum
+  = head:product ws tail:([+-] ws product)* {
+      const loc = location();
+      return { head, tail: tail.map(([op,,value]) => ({op, value})) };
+      return {
+        type: op == '+' ? 'addition' : 'subtraction',
+        left,
+        right,
+        location: {
+          start: loc.start.offset,
+          end: loc.end.offset
+        }
+      };
+    }
+
+product
+  = head:value ws tail:([*/] ws value)* {
+      const loc = location();
+      return { head, tail: tail.map(([op,,value]) => ({op, value})) };
+      return {
+        type: op == '*' ? 'product' : 'division',
+        left,
+        right,
+        location: {
+          start: loc.start.offset,
+          end: loc.end.offset
+        }
+      }
+    }
+
+
 value
+  = valueLiteral
+  / "(" ws @expression ws ")"
+
+valueLiteral
   = cellRange
   / cellReference
   / string
@@ -28,32 +70,40 @@ value
 
 cellRange "cell range"
   = start:cellReference ws ":" ws end:cellReference {
-    return {
-      type: 'range',
-      start,
-      end
-    };
-  }
+      const loc = location();
+      return {
+        type: 'range',
+        start,
+        end,
+        location: {
+          start: loc.start.offset,
+          end: loc.end.offset
+        }
+      };
+    }
 
 cellReference "cell reference"
-  = lockColumn:lockChar? column:$([a-z]i+) lockRow:lockChar? row:$(digit1_9 digit*) {
-    return parseCellReference(row, column, lockRow, lockColumn);
-  }
-
-lockChar
-  = "$"
+  = lockColumn:"$"? column:$([a-z]i+) lockRow:"$"? row:$(digit1_9 digit*) {
+      const loc = location();
+      return parseCellReference(row, column, lockRow, lockColumn, loc);
+    }
 
 string "string"
-  = quotation_mark chars:char* quotation_mark {
+  = '"' chars:char* '"' {
+      const loc = location();
       return {
         type: 'string',
-        value: chars.join("")
+        value: chars.join(""),
+        location: {
+          start: loc.start.offset,
+          end: loc.end.offset
+        }
       };
     }
 
 char
   = unescaped
-  / escape
+  / "\\"
     sequence:(
         '"'
       / "\\"
@@ -69,20 +119,19 @@ char
     )
     { return sequence; }
 
-escape
-  = "\\"
-
-quotation_mark
-  = '"'
-
 unescaped
   = [^\0-\x1F\x22\x5C]
 
 number "number"
   = minus? int frac? exp? {
+      const loc = location();
       return {
         type: 'number',
-        value: parseFloat(text())
+        value: parseFloat(text()),
+        location: {
+          start: loc.start.offset,
+          end: loc.end.offset
+        }
       };
     }
 
@@ -121,17 +170,27 @@ hexdigit
 
 false
   = "false" {
+    const loc = location();
     return {
       type: 'boolean',
-      value: false
+      value: false,
+      location: {
+        start: loc.start.offset,
+        end: loc.end.offset
+      }
     };
   }
 
 true
   = "true" {
+    const loc = location();
     return {
       type: 'boolean',
-      value: true
+      value: true,
+      location: {
+        start: loc.start.offset,
+        end: loc.end.offset
+      }
     };
   }
 
