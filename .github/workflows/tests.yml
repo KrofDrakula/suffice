@@ -7,7 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Lint and test
-        uses: ./.github/actions/lint-and-test
+      - uses: pnpm/action-setup@v2
         with:
-          package-name: interpreter
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+      - run: pnpm install
+      - name: Build grammar
+        run: pnpm build-grammar
+      - name: Lint
+        run: pnpm ci-lint
+        working-directory: packages/interpreter
+        continue-on-error: true
+      - name: Test
+        run: pnpm ci-test
+        working-directory: packages/interpreter

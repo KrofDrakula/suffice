@@ -16,7 +16,7 @@
     "test": "vitest",
     "ci-test": "vitest --run",
     "ci-lint": "tsc --noEmit",
-    "build-grammar": "peggy -o src/grammar/index.js --format es src/grammar/main.pegjs",
+    "build-grammar": "peggy -c src/grammar/peggy-config.cjs",
     "test-grammar": "pnpm build-grammar && pnpm test -- --run"
   },
   "devDependencies": {
