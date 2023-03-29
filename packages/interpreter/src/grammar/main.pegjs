@@ -15,10 +15,18 @@ cellContent
 
 prose
   = $.* {
+    const value = text();
+    if (value) {
+      const { start, end } = range();
+      return {
+        type: 'string',
+        value: text(),
+        location: { start, end }
+      };
+    }
     return {
-      type: 'string',
-      value: text()
-    };
+      type: 'empty',
+    }
   }
 
 expression

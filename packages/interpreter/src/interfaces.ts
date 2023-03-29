@@ -7,7 +7,6 @@ type Location = {
 
 export type EmptyValue = {
   type: "empty";
-  location: Location;
 };
 
 export type StringValue = {
