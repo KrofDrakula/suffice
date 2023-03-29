@@ -1,5 +1,10 @@
 import { CellValue } from "./interfaces.js";
+import { parse } from "./grammar/index.js";
+import { interpret as _interpret } from "./grammar/interpreter.js";
 
-export const interpret = (expression: string): CellValue => {
-  return { type: "string", value: expression };
+export default (
+  expression: string,
+  cells: Map<string, CellValue> = new Map()
+) => {
+  return _interpret(parse(expression), cells);
 };

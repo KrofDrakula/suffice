@@ -58,3 +58,10 @@ export type CellValue =
   | FormulaValue
   | CellReference
   | CellRange;
+
+export type BinaryOperation = {
+  type: "addition" | "subtraction" | "multiplication" | "division";
+  left: CellValue;
+  right: CellValue;
+  location: Location;
+};

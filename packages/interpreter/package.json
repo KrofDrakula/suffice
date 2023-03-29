@@ -12,12 +12,12 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "vite build",
+    "build": "pnpm build-grammar && vite build",
     "test": "vitest",
     "ci-test": "vitest --run",
     "ci-lint": "tsc --noEmit",
     "build-grammar": "peggy -c src/grammar/peggy-config.cjs",
-    "test-grammar": "pnpm build-grammar && pnpm test -- --run"
+    "test-grammar": "pnpm build-grammar && pnpm ci-test"
   },
   "devDependencies": {
     "peggy": "^3.0.2",
