@@ -6,98 +6,89 @@ const alphaToColumnNumber = (chars) =>
     (acc, next) => acc * alpha.length + alpha.indexOf(next),
     0
   ) + 1;
-
-const parseCellReference = (row, column, lockRow, lockColumn, location) => {
-  return {
-    type: "reference",
-    row: parseInt(row, 10),
-    rowLock: lockRow == "$",
-    column: alphaToColumnNumber(column),
-    columnLock: lockColumn == "$",
-    location: {
-      start: location.start.offset,
-      end: location.end.offset
-    }
-  };
-};
 }}
 
-expression
-  = ws @sum ws
+cellContent
+  = number
+  / "=" _ @expression
+  / prose
 
-sum
-  = head:product ws tail:([+-] ws product)* {
-      const loc = location();
-      return { head, tail: tail.map(([op,,value]) => ({op, value})) };
-      return {
+prose
+  = $.* {
+    return {
+      type: 'string',
+      value: text()
+    };
+  }
+
+expression
+  = _ @additive _
+
+additive
+  = head:multiplicative _ tail:(@[+-] _ @multiplicative)* {
+      const { start, end } = range();
+      return tail.reduce((left, [op, right]) => ({
         type: op == '+' ? 'addition' : 'subtraction',
         left,
         right,
-        location: {
-          start: loc.start.offset,
-          end: loc.end.offset
-        }
-      };
+        location: { start, end }
+      }), head);
     }
 
-product
-  = head:value ws tail:([*/] ws value)* {
-      const loc = location();
-      return { head, tail: tail.map(([op,,value]) => ({op, value})) };
-      return {
+multiplicative
+  = head:value _ tail:(@[*/] _ @value)* {
+      const { start, end } = range();
+      return tail.reduce((left, [op, right]) => ({
         type: op == '*' ? 'product' : 'division',
         left,
         right,
-        location: {
-          start: loc.start.offset,
-          end: loc.end.offset
-        }
-      }
+        location: { start, end }
+      }), head);
     }
 
 
 value
   = valueLiteral
-  / "(" ws @expression ws ")"
+  / "(" _ @expression _ ")"
 
 valueLiteral
   = cellRange
   / cellReference
   / string
   / number
-  / true
-  / false
+  / boolean
 
 cellRange "cell range"
-  = start:cellReference ws ":" ws end:cellReference {
-      const loc = location();
+  = left:cellReference _ ":" _ right:cellReference {
+      const { start, end } = range();
       return {
         type: 'range',
-        start,
-        end,
-        location: {
-          start: loc.start.offset,
-          end: loc.end.offset
-        }
+        start: left,
+        end: right,
+        location: { start, end }
       };
     }
 
 cellReference "cell reference"
-  = lockColumn:"$"? column:$([a-z]i+) lockRow:"$"? row:$(digit1_9 digit*) {
-      const loc = location();
-      return parseCellReference(row, column, lockRow, lockColumn, loc);
+  = lockColumn:"$"? column:$([a-z]i+) lockRow:"$"? row:nat_number {
+      const { start, end } = range();
+      return {
+        type: "reference",
+        row: parseInt(row, 10),
+        rowLock: lockRow == "$",
+        column: alphaToColumnNumber(column),
+        columnLock: lockColumn == "$",
+        location: { start, end }
+      };
     }
 
 string "string"
   = '"' chars:char* '"' {
-      const loc = location();
+      const { start, end } = range();
       return {
         type: 'string',
         value: chars.join(""),
-        location: {
-          start: loc.start.offset,
-          end: loc.end.offset
-        }
+        location: { start, end }
       };
     }
 
@@ -123,20 +114,26 @@ unescaped
   = [^\0-\x1F\x22\x5C]
 
 number "number"
-  = minus? int frac? exp? {
-      const loc = location();
+  = [+-]? int frac? exp? {
+      const { start, end } = range();
       return {
         type: 'number',
         value: parseFloat(text()),
-        location: {
-          start: loc.start.offset,
-          end: loc.end.offset
-        }
+        location: { start, end }
       };
     }
 
-decimal_point
-  = "."
+exp
+  = [eE] [+-]? digit+
+
+frac
+  = "." digit+
+
+int
+  = "0" / nat_number
+
+nat_number
+  = $(digit1_9 digit*)
 
 digit1_9
   = [1-9]
@@ -144,54 +141,17 @@ digit1_9
 digit
   = [0-9]
 
-e
-  = [eE]
-
-exp
-  = e (minus / plus)? digit+
-
-frac
-  = decimal_point digit+
-
-int
-  = zero / (digit1_9 digit*)
-
-minus
-  = "-"
-
-plus
-  = "+"
-
-zero
-  = "0"
-
 hexdigit
   = [0-9a-f]i
 
-false
-  = "false" {
-    const loc = location();
-    return {
-      type: 'boolean',
-      value: false,
-      location: {
-        start: loc.start.offset,
-        end: loc.end.offset
-      }
-    };
-  }
+boolean
+  = value:("true" / "false") {
+      const { start, end } = range();
+      return {
+        type: 'boolean',
+        value: value == 'true',
+        location: { start, end }
+      };
+    }
 
-true
-  = "true" {
-    const loc = location();
-    return {
-      type: 'boolean',
-      value: true,
-      location: {
-        start: loc.start.offset,
-        end: loc.end.offset
-      }
-    };
-  }
-
-ws "whitespace" = [ \t\n\r]*
+_ "whitespace" = [ \t\n\r]* { return null; }
