@@ -104,4 +104,12 @@ describe("grammar", () => {
       location: { start: 1, end: 6 },
     } satisfies CellRange);
   });
+
+  it("parses prose as strings", () => {
+    expect(parse("this is some bullshit")).toEqual({
+      type: "string",
+      value: "this is some bullshit",
+      location: { start: 0, end: 21 },
+    });
+  });
 });
