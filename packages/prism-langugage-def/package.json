@@ -13,7 +13,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "pnpm build-grammar && vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "test": "vitest"
   },
   "devDependencies": {
     "typescript": "^5.0.4",
