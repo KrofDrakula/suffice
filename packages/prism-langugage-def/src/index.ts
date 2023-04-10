@@ -5,16 +5,6 @@ Prism.languages["suffice"] = {
     pattern: /^=.*/,
     alias: "important",
     inside: {
-      punctuation: /[\(\),=]/,
-      infix: {
-        pattern: /[\*\/+-]/,
-        alias: "operator",
-      },
-      number: /[+-]?(?:0|[1-9][0-9]*)(?:\.\d*)?(?:e[+-]?\d*)?/i,
-      boolean: /true|false/,
-      string: {
-        pattern: /"(?:[^\\\r\n]|\\")*"/,
-      },
       cellRange: {
         pattern: /\$?[a-z]+\$?[0-9]+:\$?[a-z]+\$?[0-9]+/i,
         greedy: true,
@@ -28,6 +18,16 @@ Prism.languages["suffice"] = {
         pattern: /\$?[a-z]+\$?[0-9]+/i,
         greedy: true,
         alias: "variable",
+      },
+      punctuation: /[\(\),=]/,
+      infix: {
+        pattern: /[\*\/+-]/,
+        alias: "operator",
+      },
+      number: /[+-]?(?:0|[1-9][0-9]*)(?:\.\d*)?(?:e[+-]?\d*)?/i,
+      boolean: /true|false/,
+      string: {
+        pattern: /"(?:[^\\\r\n]|\\")*"/,
       },
       identifier: {
         pattern: /[a-z_]+/i,
