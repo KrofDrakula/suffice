@@ -3,12 +3,60 @@
 
 <head>
   <meta charset="utf-8" />
-  <link href="node_modules/prismjs/themes/prism-okaidia.css" rel="stylesheet" />
+  <link href="node_modules/prismjs/themes/prism-dark.css" rel="stylesheet" />
   <script type="module" src="src/index.ts"></script>
+  <style>
+    .overlaid {
+      position: relative;
+    }
+
+    #editing,
+    #highlighting {
+      /* Both elements need the same text and space styling so they are directly on top of each other */
+      margin: 10px;
+      padding: 10px;
+      border: 0;
+      width: calc(100% - 32px);
+      height: 6em;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    #editing,
+    #highlighting,
+    #highlighting * {
+      /* Also add text styles to highlighting tokens */
+      font-size: 15pt;
+      font-family: monospace;
+      font-weight: normal;
+      line-height: 20pt;
+    }
+
+    #editing {
+      z-index: 1;
+      color: transparent;
+      background: transparent;
+      caret-color: white;
+      /* Or choose your favorite color */
+
+    }
+
+    ;
+
+    #highlighting {
+      z-index: 0;
+    }
+
+  </style>
 </head>
 
 <body>
-  <pre><code class="language-suffice">= +123 -123.456 123e-3 = + / * - "hello" true A1 B3:$C$7 SUM(A1:B3, D5)</code></pre>
+  <div class="overlaid">
+    <pre id="highlighting"><code id="code" class="language-suffice"></code></pre>
+    <textarea id="editing">= +123 -123.456 123e-3 = + / * - "hello" true A1 B3:$C$7 SUM(A1:B3, D5)</textarea>
+  </div>
+  <script type="module" src="src/interactive.ts"></script>
 </body>
 
 </html>
