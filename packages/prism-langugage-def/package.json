@@ -13,7 +13,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "vite",
-    "test": "vitest"
+    "test": "vitest",
+    "ci-test": "vitest --run"
   },
   "devDependencies": {
     "typescript": "^5.0.4",
