@@ -12,11 +12,13 @@ export default defineConfig(({ command }) => {
         },
         name: "prism-lanugage-def",
       },
-
       sourcemap: true,
       target: "esnext",
       emptyOutDir: true,
       reportCompressedSize: true,
+      rollupOptions: {
+        external: ["prismjs"],
+      },
     },
     plugins: [dts()],
   };
