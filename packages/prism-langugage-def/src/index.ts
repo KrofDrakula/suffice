@@ -24,7 +24,10 @@ Prism.languages["suffice"] = {
         pattern: /[\*\/+-]/,
         alias: "operator",
       },
-      number: /[+-]?(?:0|[1-9][0-9]*)(?:\.\d*)?(?:e[+-]?\d*)?/i,
+      number: {
+        pattern: /[+-]?(?:0|[1-9][0-9]*)(?:\.\d*)?(?:e[+-]?\d*)?/i,
+        greedy: true,
+      },
       boolean: /true|false/,
       string: {
         pattern: /"(?:[^\\\r\n]|\\")*"/,
