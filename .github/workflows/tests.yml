@@ -26,7 +26,7 @@ jobs:
         run: pnpm ci-test
         working-directory: packages/interpreter
   prism-language-def:
-    name: SyntaxHighlighting
+    name: Syntax highlighting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
