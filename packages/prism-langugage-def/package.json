@@ -12,7 +12,6 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "pnpm build-grammar && vite build",
     "dev": "vite",
     "test": "vitest"
   },
