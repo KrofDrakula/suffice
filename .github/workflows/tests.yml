@@ -25,3 +25,19 @@ jobs:
       - name: Test
         run: pnpm ci-test
         working-directory: packages/interpreter
+  prism-language-def:
+    name: SyntaxHighlighting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: "pnpm"
+      - run: pnpm install
+      - name: Test
+        run: pnpm ci-test
+        working-directory: packages/prism-language-def
