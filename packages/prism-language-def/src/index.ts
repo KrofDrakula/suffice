@@ -1,4 +1,4 @@
-import Prism from "prismjs";
+import * as Prism from "prismjs";
 
 Prism.languages["suffice"] = {
   formulaStart: {

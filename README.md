@@ -9,6 +9,7 @@ A lightweight Excel-like spreadsheet application. Do what you need, and nothing 
 The application is divided into separate `pnpm` packages in the `packages/` directory. When running a command, make sure to switch your current working directory into the relevant package.
 
 - [`interpreter`](#interpreter) contains the expression parser and compiler for cell content
+- [`prism-language-def`](#prism-language-def) contains the language definition for [Prism](https://prismjs.com/)
 
 ## Development
 
@@ -29,3 +30,13 @@ pnpm build-grammar
 ```
 
 This will build the parser in `src/grammar/index.js` which is then imported and built into an exported package.
+
+### `prism-language-def`
+
+To run the live web page to test out the syntax highlighting, you can run the dev server to test out the language definition:
+
+```
+pnpm dev
+```
+
+You can build the package using `pnpm build`.
