@@ -1,3 +1,5 @@
+import Prism from "prismjs";
+
 const ta = document.body.querySelector("textarea")! as HTMLTextAreaElement;
 const styled = document.body.querySelector("#code")! as HTMLDivElement;
 
